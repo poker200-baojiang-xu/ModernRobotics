@@ -24,10 +24,16 @@ function Js = JacobianSpace(Slist, thetalist)
 %    0.2000    0.4365   -2.4371    2.7754
 %    0.2000    2.9603    3.2357    2.2251
 
-Js = Slist;
-T = eye(4);
+Js = Slist;  % 初始化雅可比矩阵为Slist
+
+T = eye(4);  % 初始化变换矩阵为4x4单位矩阵
+
+% 从第2个关节开始循环
 for i = 2: length(thetalist)
+    % 计算到前一个关节的累积变换
     T = T * MatrixExp6(VecTose3(Slist(:, i - 1) * thetalist(i - 1)));
-	Js(:, i) = Adjoint(T) * Slist(:, i);
+    
+    % 使用伴随变换计算当前关节的贡献
+    Js(:, i) = Adjoint(T) * Slist(:, i);
 end
 end
